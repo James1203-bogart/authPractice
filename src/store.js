@@ -49,16 +49,15 @@ const authUser =  {
 
     actions: {
         login({state, commit}, {password, username}){ 
-            const user = state.users.find( (user) => user.username === username && user.password === password);
+            const user = state.users.find((user) => user.username === username && user.password === password);
 
-            if(user){
-                commit(TOKEN_TO_SET, user.token);
-                return {success: true};
-            }
-            else{
-                return { success: false, error: 'Mali credentials mo ya'};
-            }
-        },
+            if (user) {
+                    commit('TOKEN_TO_SET', user.token);
+                    return { success: true };
+                } else {
+                    return { success: false, error: 'Invalid username or password.' };
+                }
+            },
 
         logout({commit}){
             commit(TOKEN_TO_SET, null);
@@ -67,7 +66,7 @@ const authUser =  {
 }
 const store = createStore({
     modules: {
-        authStore
+        authUser
     }
 });
 

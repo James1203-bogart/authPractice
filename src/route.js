@@ -1,22 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import loginView from './view/auth/content/loginPage/index.vue';
-import AuthenticatedView from '.vue/index.vue';
+import AuthenticatedView from './view/index.vue';
 
 const routes = [{ 
-        path: 'login',
+        path: '/login',
         name: 'login',
         component: loginView
     },
     { 
-        path: '/',
+        path: '/Authenticated',
         name: 'Authenticated',
         component: AuthenticatedView,
         meta: { requiresAuth: true }
     },
     {
         path: '/:pathMatch (.*)*',
-        redirect: '/',
-    }
+        redirect: '/Authenticated',
+    },
 ];
 
 const router = createRouter ({

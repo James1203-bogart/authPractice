@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { errorMessages } from 'vue/compiler-sfc';
-
-</script>
-
 <template>
   <div class="'login-container'">
     <h1>LOGIN</h1>
@@ -56,14 +51,14 @@ export default{
       const response = await this.$store.dispatch('authUser/login', {
         username: this.username,
         password: this.password
-      }); 
+      });
       
       if(response.success) {
-        this.$router.push('/');
+        this.$router.push('/Authenticated');
       }else{
         this.errorMessages = response.console.error;
       }
     }
   }
-}
+};
 </script>
