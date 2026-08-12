@@ -14,8 +14,13 @@ const routes = [{
         meta: { requiresAuth: true }
     },
     {
-        path: '/:pathMatch (.*)*',
+        path: '/:pathMatch(.*)*',
         redirect: '/admin',
+    },
+    {
+        path: '/standardUser',
+        name: '/standardUser',
+        meta:{ requireAuth: true}
     },
 ];
 
@@ -24,17 +29,20 @@ const router = createRouter ({
     routes
 });
 
-router.beforeEach((to, from, next) => {
+    router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('authToken');
     const nextPath = to.path.toLowerCase();
+    const currentUser = store.getters['authUser/currentUser'];
 
-    if(to.meta.requiresAuth && !token) { 
+    if (to.meta.requiresAuth && !token) { 
         next('/login');
-    }else if (nextPath === '/login' && token){
-        next('/admin')
-    }else if(nextPath === '/' && !token){
-        next('/login')
-    }else{ 
+    } else if (nextPath === '/login' && token) {
+        if (currentUser?.account_type === 'admin') {
+        next('/admin');
+        } else {
+        next('/standardUser');
+        }
+    } else { 
         next();
     }
 }) 

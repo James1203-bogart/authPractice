@@ -55,7 +55,7 @@ export default{
       
       if( response && response.success ) {
 
-      if(response.user.account_type === admin){
+      if(response.user.account_type === 'admin'){
         this.$router.push('/admin')
       }
       else{
