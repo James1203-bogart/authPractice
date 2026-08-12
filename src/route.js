@@ -8,14 +8,14 @@ const routes = [{
         component: loginView
     },
     { 
-        path: '/Authenticated',
-        name: 'Authenticated',
+        path: '/admin',
+        name: 'admin',
         component: AuthenticatedView,
         meta: { requiresAuth: true }
     },
     {
         path: '/:pathMatch (.*)*',
-        redirect: '/Authenticated',
+        redirect: '/admin',
     },
 ];
 
@@ -26,11 +26,14 @@ const router = createRouter ({
 
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('authToken');
+    const nextPath = to.path.toLowerCase();
 
     if(to.meta.requiresAuth && !token) { 
         next('/login');
-    }else if (to.path  === 'login' && token){
-        next('/')
+    }else if (nextPath === '/login' && token){
+        next('/admin')
+    }else if(nextPath === '/' && !token){
+        next('/login')
     }else{ 
         next();
     }

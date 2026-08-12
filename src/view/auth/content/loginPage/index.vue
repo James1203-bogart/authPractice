@@ -53,10 +53,14 @@ export default{
         password: this.password
       });
       
-      if(response.success) {
-        this.$router.push('/Authenticated');
-      }else{
-        this.errorMessages = response.console.error;
+      if( response && response.success ) {
+
+      if(response.user.account_type === admin){
+        this.$router.push('/admin')
+      }
+      else{
+        this.$router.push('/standardUser')
+        }
       }
     }
   }
