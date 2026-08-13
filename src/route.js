@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import loginView from './view/auth/content/loginPage/index.vue';
 import AuthenticatedView from './view/index.vue';
+import store from './store.js';
 
 const routes = [{ 
         path: '/login',
@@ -14,20 +15,21 @@ const routes = [{
         meta: { requiresAuth: true }
     },
     {
+        path: '/user',
+        name: 'user',
+        component:AuthenticatedView,
+        meta: { requiresAuth: true }
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/admin',
     },
-    {
-        path: '/standardUser',
-        name: '/standardUser',
-        meta:{ requireAuth: true}
-    },
 ];
 
-const router = createRouter ({
-    history: createWebHistory(),
-    routes
-});
+    const router = createRouter ({
+        history: createWebHistory(),
+        routes
+    });
 
     router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('authToken');
@@ -35,16 +37,20 @@ const router = createRouter ({
     const currentUser = store.getters['authUser/currentUser'];
 
     if (to.meta.requiresAuth && !token) { 
-        next('/login');
-    } else if (nextPath === '/login' && token) {
+        return next('/login');
+    } 
+
+    if (nextPath === '/login' && token) {
         if (currentUser?.account_type === 'admin') {
-        next('/admin');
+        return next('/admin');
+        } else if (currentUser?.account_type === 'user') {
+        return next('/user');
         } else {
-        next('/standardUser');
+        return next('/standardUser');
         }
-    } else { 
-        next();
-    }
-}) 
+    } 
+
+    return next();
+    });
 
 export default router;

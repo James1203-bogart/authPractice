@@ -1,8 +1,5 @@
 <template>
-    <div class="Authenticated-standardUser">
-        {{ notAdminUser.full_name }}
-            <button @click="handleLogout">LOGOUT</button>
-    </div>
+    <p>{{ currentUser.full_name }}</p>
 </template>
 
 <script>
