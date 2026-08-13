@@ -52,7 +52,7 @@
             inputAccount: '',
             inputPassword: '',
             inputFullName: '',
-            users: [{ id: 1, name: 'name' }],
+            id: [{ id: 1, name: 'name' }],
             token:'',
             };
         },

@@ -27,7 +27,7 @@ const authUser ={
   },
 
  getters: {
-    users: (state) => state.allusers,
+    users: (state) => state.allUsers,
     currentUser: (state) => {
       return state.allUsers.find((user) => user.token === state.authToken) || null;
     },
@@ -51,7 +51,7 @@ const authUser ={
 
       if (user) {
         commit('TOKEN_TO_SET', user.token);
-        return { success: true };
+        return {success: true, user};
       } else {
         return { success: false, error: 'Invalid username or password.' };
       }
