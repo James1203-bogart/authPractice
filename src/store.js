@@ -1,21 +1,10 @@
 import { createStore } from "vuex";
-
-  const generateStandardString = (length = 10) => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length)
-    result += chars.charAt(randomIndex)
-  }
-  randomString.value = result
-}
-
 const authUser ={
   namespaced: true,
   state(){
     return{
       authToken: localStorage.getItem('authToken') || null,
-      allUsers: [{
+      allUsers: JSON.parse(localStorage.getItem('allUsers')) || [{
         id: 1,
         username: 'admin1',
         password: '@admin1',
@@ -27,38 +16,69 @@ const authUser ={
   },
 
  getters: {
-    users: (state) => state.allUsers,
-    currentUser: (state) => {
+    users: (state) => state.allUsers.filter(user => user.account_type !== 'admin'),
+    currentUser: (state) => 
+    {
       return state.allUsers.find((user) => user.token === state.authToken) || null;
     },
     isAuthenticated: (state) => !!state.authToken
   },
   mutations: {
-    TOKEN_TO_SET(state, token) {
+    TOKEN_TO_SET(state, token) 
+    {
       state.authToken = token;
-      if (token) {
+      if (token) 
+      {
         localStorage.setItem('authToken', token);
-      } else {
+      } 
+      else 
+      {
         localStorage.removeItem('authToken');
       }
+    },
+
+    ADD_ACCOUNT(state, newUser) 
+    {
+      state.allUsers.push(newUser);
+      localStorage.setItem('allUsers', JSON.stringify(state.allUsers))
+    },
+
+    SET_USERS(state, updatedList) 
+    {
+      const admins = state.allUsers.filter(user => user.account_type === 'admin');
+      state.allUsers = [...admins, ...updatedList];
+      localStorage.setItem('allUsers', JSON.stringify(state.allUsers));
     }
   },
-  actions: {
-    login({ state, commit }, { username, password }) {
-      const user = state.allUsers.find(
-        (user) => user.username === username && user.password === password
-      );
 
-      if (user) {
+  actions: {
+    login({ state, commit }, { username, password })
+    {
+      const user = state.allUsers.find((user) => user.username === username && user.password === password);
+
+      if (user) 
+      {
         commit('TOKEN_TO_SET', user.token);
         return {success: true, user};
-      } else {
+      } 
+      else 
+      {
         return { success: false, error: 'Invalid username or password.' };
       }
     },
-    logout({ commit }) {
+
+    logout({ commit }) 
+    {
       commit('TOKEN_TO_SET', null);
-    }
+    }, 
+    addAccount({commit}, newUser)
+    {
+      commit('ADD_ACCOUNT', newUser)
+    },
+    updateUsers({commit}, updatedList)
+    {
+      commit('SET_USERS', updatedList)
+    },
   }
 };
 

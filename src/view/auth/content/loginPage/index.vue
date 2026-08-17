@@ -59,8 +59,11 @@ export default{
         this.$router.push('/admin')
       }
       else{
-        this.$router.push('/standardUser')
+        this.$router.push('/user')
         }
+      if(response.user.account_type === 'user'){
+        this.$router.push('/user')
+      }
       }
     }
   }

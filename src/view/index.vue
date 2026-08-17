@@ -6,8 +6,8 @@
         </section>
         <br>
         <section class="account-form" v-if="currentUser">
+            <input v-model="inputFullName" placeholder="Fullname" />
         <input v-model="inputAccount" placeholder="Username" />
-        <input v-model="inputFullName" placeholder="Fullname" />
         <input type="password" v-model="inputPassword" placeholder="Password" />
         <button @click="addAccount">Add account</button>
         <button @click="saveAccount">Save</button>
@@ -61,7 +61,7 @@
             return this.$store.getters['authUser/currentUser'];
             },
             users(){ 
-                return this.$store.getters['authUsers/standardUsersList'];
+                return this.$store.getters['authUser/users'];;
             }
         },
         methods: {
