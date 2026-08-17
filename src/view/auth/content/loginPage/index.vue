@@ -21,7 +21,7 @@
         type="password"
         placeholder="Enter Password"
         required/>
-      </div>
+      </div> 
       <p v-if="errorMessages" class="error">{{ errorMessages }}</p>
 
       <button type="submit">SUBMIT</button>
@@ -58,9 +58,7 @@ export default{
       if(response.user.account_type === 'admin'){
         this.$router.push('/admin')
       }
-      else{
-        this.$router.push('/user')
-        }
+
       if(response.user.account_type === 'user'){
         this.$router.push('/user')
       }

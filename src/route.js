@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import loginView from './view/auth/content/loginPage/index.vue';
-import AuthenticatedView from './view/index.vue';
+import AuthenticatedView from './view/admin/index.vue';
 import store from './store.js';
-import loginUser from './view/auth/content/loginUser/index.vue'
+import loginUser from './view/user/index.vue'
 
 const routes = [{ 
         path: '/login',
@@ -10,7 +10,7 @@ const routes = [{
         component: loginView
     },
     { 
-        path: '/admin',
+        path: '/admin', 
         name: 'admin',
         component: AuthenticatedView,
         meta: { requiresAuth: true, requiresAdmin: true}
@@ -21,10 +21,6 @@ const routes = [{
         component:loginUser,
         meta: { requiresAuth: true }
     },
-    {
-        path: '/:pathMatch(.*)*',
-        redirect: '/admin',
-    },
 ];
 
     const router = createRouter ({
@@ -33,29 +29,49 @@ const routes = [{
     });
 
     router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('authToken');
-    const nextPath = to.path.toLowerCase();
-    const currentUser = store.getters['authUser/currentUser'];
+        const token = localStorage.getItem('authToken');
+        const nextPath = to.path.toLowerCase();
+        const currentUser = store.getters['authUser/currentUser'];
 
-    if (to.meta.requiresAuth && !token) { 
-        return next('/login');
-    } 
-
-    if (nextPath === '/login' && token) {
-        if (currentUser?.account_type === 'admin') {
-        return next('/admin');
-        } else if (currentUser?.account_type === 'user') {
-        return next('/user');
+        if (!token && nextPath == '/') { 
+            return next('/login');
         }
-        else {
-        return next('/user');
-        }
-    }
-    if (to.meta.requiresAdmin && currentUser?.account_type !== 'admin') {
-    return next('/user');
-}
 
-    return next();
+        if (to.meta.requiresAuth && !token) { 
+            return next('/login');
+        }
+
+        if (token && (nextPath == '/' || nextPath == '/login'))
+        {
+            if (currentUser?.account_type === 'admin') {
+                return next('/admin');
+            } else if (currentUser?.account_type === 'user') {
+                return next('/user');
+            }
+        }
+ 
+        if (token)
+        {
+            if (nextPath == '/' || nextPath == '/login')
+            {
+            if (currentUser?.account_type === 'admin') {
+                return next('/admin');
+            } else if (currentUser?.account_type === 'user') {
+                return next('/user');
+            }
+            }
+            else if (nextPath == '/admin' && currentUser?.account_type === 'user')
+            {
+                return next('/user');
+            }
+            else if (nextPath == '/user' && currentUser?.account_type === 'admin')
+            {
+                return next('/admin');
+            }
+        }
+
+        return next();
+
     });
 
 export default router;
